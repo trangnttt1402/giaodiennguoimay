@@ -3,65 +3,76 @@
 @section('title', 'Chỉnh sửa người dùng')
 
 @section('content')
-<h2>Chỉnh sửa người dùng: {{ $user->name }}</h2>
-
-<div class="card" style="max-width:600px;">
-    <form method="POST" action="{{ route('admin.users.update', $user) }}">
-        @csrf
-        @method('PUT')
-
-        <div style="margin-bottom:16px;">
-            <label style="display:block;margin-bottom:4px;color:#94a3b8;font-size:13px;">Họ tên <span style="color:#ef4444;">*</span></label>
-            <input type="text" name="name" value="{{ old('name', $user->name) }}" required style="width:100%;">
-            @error('name')<div style="color:#ef4444;font-size:12px;margin-top:4px;">{{ $message }}</div>@enderror
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h2>👤 Chỉnh sửa người dùng</h2>
+            <p>Cập nhật thông tin tài khoản: <strong>{{ $user->name }}</strong></p>
         </div>
 
-        <div style="margin-bottom:16px;">
-            <label style="display:block;margin-bottom:4px;color:#94a3b8;font-size:13px;">Email <span style="color:#ef4444;">*</span></label>
-            <input type="email" name="email" value="{{ old('email', $user->email) }}" required style="width:100%;">
-            @error('email')<div style="color:#ef4444;font-size:12px;margin-top:4px;">{{ $message }}</div>@enderror
-        </div>
+        <form method="POST" action="{{ route('admin.users.update', $user) }}">
+            @csrf
+            @method('PUT')
 
-        <div style="margin-bottom:16px;">
-            <label style="display:block;margin-bottom:4px;color:#94a3b8;font-size:13px;">Mã người dùng</label>
-            <input type="text" name="code" value="{{ old('code', $user->code) }}" style="width:100%;">
-            @error('code')<div style="color:#ef4444;font-size:12px;margin-top:4px;">{{ $message }}</div>@enderror
-        </div>
+            <div class="form-row cols-2">
+                <div class="form-group">
+                    <label class="form-label">Họ tên <span class="required">*</span></label>
+                    <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="form-input">
+                    @error('name')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
 
-        <div style="margin-bottom:16px;">
-            <label style="display:block;margin-bottom:4px;color:#94a3b8;font-size:13px;">Vai trò <span style="color:#ef4444;">*</span></label>
-            <select name="role" required style="width:100%;">
-                <option value="student" {{ old('role', $user->role) === 'student' ? 'selected' : '' }}>Sinh viên</option>
-                <option value="lecturer" {{ old('role', $user->role) === 'lecturer' ? 'selected' : '' }}>Giảng viên</option>
-                <option value="faculty_admin" {{ old('role', $user->role) === 'faculty_admin' ? 'selected' : '' }}>Quản trị khoa</option>
-                <option value="super_admin" {{ old('role', $user->role) === 'super_admin' ? 'selected' : '' }}>Quản trị hệ thống</option>
-            </select>
-            @error('role')<div style="color:#ef4444;font-size:12px;margin-top:4px;">{{ $message }}</div>@enderror
-        </div>
+                <div class="form-group">
+                    <label class="form-label">Email <span class="required">*</span></label>
+                    <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="form-input">
+                    @error('email')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+            </div>
 
-        <div style="margin-bottom:16px;">
-            <label style="display:block;margin-bottom:4px;color:#94a3b8;font-size:13px;">Khoa</label>
-            <select name="faculty_id" style="width:100%;">
-                <option value="">-- Không thuộc khoa nào --</option>
-                @foreach($faculties as $faculty)
-                <option value="{{ $faculty->id }}" {{ old('faculty_id', $user->faculty_id) == $faculty->id ? 'selected' : '' }}>
-                    {{ $faculty->name }}
-                </option>
-                @endforeach
-            </select>
-            @error('faculty_id')<div style="color:#ef4444;font-size:12px;margin-top:4px;">{{ $message }}</div>@enderror
-        </div>
+            <div class="form-row cols-2">
+                <div class="form-group">
+                    <label class="form-label">Mã người dùng</label>
+                    <input type="text" name="code" value="{{ old('code', $user->code) }}" class="form-input">
+                    @error('code')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
 
-        <div style="margin-bottom:16px;">
-            <label style="display:block;margin-bottom:4px;color:#94a3b8;font-size:13px;">Khóa học</label>
-            <input type="text" name="class_cohort" value="{{ old('class_cohort', $user->class_cohort) }}" placeholder="VD: K17" style="width:100%;">
-            @error('class_cohort')<div style="color:#ef4444;font-size:12px;margin-top:4px;">{{ $message }}</div>@enderror
-        </div>
+                <div class="form-group">
+                    <label class="form-label">Vai trò <span class="required">*</span></label>
+                    <select name="role" required class="form-select">
+                        <option value="student" {{ old('role', $user->role) === 'student' ? 'selected' : '' }}>Sinh viên</option>
+                        <option value="lecturer" {{ old('role', $user->role) === 'lecturer' ? 'selected' : '' }}>Giảng viên</option>
+                        <option value="faculty_admin" {{ old('role', $user->role) === 'faculty_admin' ? 'selected' : '' }}>Quản trị khoa</option>
+                        <option value="super_admin" {{ old('role', $user->role) === 'super_admin' ? 'selected' : '' }}>Quản trị hệ thống</option>
+                    </select>
+                    @error('role')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+            </div>
 
-        <div style="display:flex;gap:12px;margin-top:24px;">
-            <button type="submit" style="background:#0ea5e9;color:#fff;padding:10px 20px;border-radius:8px;cursor:pointer;border:none;">Cập nhật</button>
-            <a href="{{ route('admin.users') }}" style="background:#475569;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;display:inline-block;">Hủy</a>
-        </div>
-    </form>
+            <div class="form-row cols-2">
+                <div class="form-group">
+                    <label class="form-label">Khoa</label>
+                    <select name="faculty_id" class="form-select">
+                        <option value="">-- Không thuộc khoa nào --</option>
+                        @foreach($faculties as $faculty)
+                        <option value="{{ $faculty->id }}" {{ old('faculty_id', $user->faculty_id) == $faculty->id ? 'selected' : '' }}>
+                            {{ $faculty->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('faculty_id')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Khóa học</label>
+                    <input type="text" name="class_cohort" value="{{ old('class_cohort', $user->class_cohort) }}" class="form-input" placeholder="VD: K17">
+                    @error('class_cohort')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">💾 Cập nhật người dùng</button>
+                <a href="{{ route('admin.users') }}" class="btn-cancel">Hủy</a>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection
