@@ -1,0 +1,299 @@
+@extends('admin.layout')
+
+@section('title', 'Dashboard')
+
+@section('content')
+<style>
+    .stat-card {
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .stat-card .label {
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .stat-card .value {
+        font-size: 36px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 4px;
+    }
+
+    .stat-card .icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 12px;
+    }
+
+    .stat-card.blue .icon {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .stat-card.green .icon {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .stat-card.purple .icon {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    }
+
+    .stat-card.orange .icon {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .stat-card .icon {
+        color: white;
+    }
+
+    .quick-action {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+    }
+
+    .quick-action:hover {
+        border-color: #6B4B9D;
+        box-shadow: 0 6px 20px rgba(107, 75, 157, 0.2);
+        transform: translateY(-4px);
+    }
+
+    .quick-action .title {
+        font-weight: 600;
+        color: #6B4B9D;
+        margin-bottom: 6px;
+        font-size: 15px;
+    }
+
+    .quick-action .desc {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .chart-container {
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+</style>
+
+<!-- Filter Bar -->
+<div style="background:white; padding:16px 24px; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-bottom:24px; display:flex; align-items:center; justify-content:space-between;">
+    <form action="{{ route('admin.dashboard') }}" method="GET" style="display:flex; gap:12px; align-items:center;">
+        <label style="font-size:14px; color:#475569; font-weight:500;">
+            Lọc theo Khoa:
+            <select name="faculty_id" onchange="this.form.submit()" style="margin-left:8px; padding:8px 12px; border:1px solid #cbd5e0; border-radius:6px; font-size:14px;">
+                <option value="">Tất cả Khoa</option>
+                @foreach($faculties as $fac)
+                <option value="{{ $fac->id }}" {{ (string)$facultyFilter === (string)$fac->id ? 'selected' : '' }}>
+                    {{ $fac->code }} - {{ $fac->name }}
+                </option>
+                @endforeach
+            </select>
+        </label>
+    </form>
+    <div style="color:#64748b; font-size:14px;">
+        📅 <strong style="color:#1e293b;">{{ $academicYear }}</strong> - <strong style="color:#1e293b;">{{ $term === 'HK1' ? 'Học kỳ 1' : ($term === 'HK2' ? 'Học kỳ 2' : 'Học kỳ Hè') }}</strong>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:20px; margin-bottom:24px;">
+    <div class="stat-card blue">
+        <div class="icon">👨‍🎓</div>
+        <div class="label">Tổng số Sinh viên</div>
+        <div class="value">{{ number_format($totalStudents) }}</div>
+    </div>
+
+    <div class="stat-card green">
+        <div class="icon">📚</div>
+        <div class="label">Học phần đang mở</div>
+        <div class="value">{{ number_format($totalOpenCourses) }}</div>
+    </div>
+
+    <div class="stat-card purple">
+        <div class="icon">✅</div>
+        <div class="label">Tổng lượt đăng ký</div>
+        <div class="value">{{ number_format($totalRegistrations) }}</div>
+    </div>
+
+    <div class="stat-card orange">
+        <div class="icon">👨‍🏫</div>
+        <div class="label">Giảng viên</div>
+        <div class="value">{{ number_format($totalLecturers ?? 0) }}</div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div style="display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-bottom:24px;">
+    <!-- Line Chart -->
+    <div class="chart-container">
+        <h3 style="margin:0 0 16px 0; font-size:16px; font-weight:600; color:#1e293b;">
+            📈 Số lượt đăng ký theo thời gian
+        </h3>
+        <canvas id="registrationChart" height="80"></canvas>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="chart-container">
+        <h3 style="margin:0 0 16px 0; font-size:16px; font-weight:600; color:#1e293b;">
+            📊 Sinh viên theo Khoa
+        </h3>
+        <canvas id="facultyChart"></canvas>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div style="margin-bottom:24px;">
+    <h3 style="margin:0 0 16px 0; font-size:18px; font-weight:600; color:#1e293b;">⚡ Thao tác nhanh</h3>
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px;">
+        <a href="{{ route('admin.users.create') }}?role=student" class="quick-action">
+            <div class="title">➕ Thêm Sinh viên</div>
+            <div class="desc">Tạo tài khoản SV mới</div>
+        </a>
+
+        <a href="{{ route('lecturers.create') }}" class="quick-action">
+            <div class="title">➕ Thêm Giảng viên</div>
+            <div class="desc">Tạo tài khoản GV mới</div>
+        </a>
+
+        <a href="{{ route('courses.create') }}" class="quick-action">
+            <div class="title">📖 Tạo Học phần</div>
+            <div class="desc">Thêm môn học mới</div>
+        </a>
+
+        <a href="{{ route('class-sections.create') }}" class="quick-action">
+            <div class="title">🏫 Mở Lớp HP</div>
+            <div class="desc">Tạo lớp học phần</div>
+        </a>
+
+        <a href="{{ route('registration-waves.index') }}" class="quick-action">
+            <div class="title">⏰ Cài đặt Đăng ký</div>
+            <div class="desc">Quản lý kỳ đăng ký</div>
+        </a>
+
+        <a href="{{ route('admin.reports') }}" class="quick-action">
+            <div class="title">📑 Xem Báo cáo</div>
+            <div class="desc">Thống kê & báo cáo</div>
+        </a>
+
+        <a href="{{ route('admin.backup') }}" class="quick-action">
+            <div class="title">💾 Sao lưu</div>
+            <div class="desc">Backup dữ liệu</div>
+        </a>
+
+        <a href="{{ route('admin.logs') }}" class="quick-action">
+            <div class="title">📋 Nhật ký</div>
+            <div class="desc">Xem log hệ thống</div>
+        </a>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+@php
+// Prepare data for charts in PHP to avoid Blade syntax pitfalls
+$facultyLabels = $faculties->pluck('code');
+$facultyData = $faculties->map(function($f) {
+return \App\Models\User::where('role', 'student')->where('faculty_id', $f->id)->count();
+});
+@endphp
+
+<script>
+    // Registration Trend Chart (Line)
+    const registrationCtx = document.getElementById('registrationChart').getContext('2d');
+    new Chart(registrationCtx, {
+        type: 'line',
+        data: {
+            labels: ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4', 'Tuần 5', 'Tuần 6'],
+            datasets: [{
+                label: 'Lượt đăng ký',
+                data: [120, 350, 580, 720, 850, {
+                    {
+                        (int)($totalRegistrations ?? 0)
+                    }
+                }],
+                borderColor: '#1976d2',
+                backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Faculty Distribution Chart (Doughnut)
+    const facultyCtx = document.getElementById('facultyChart').getContext('2d');
+    new Chart(facultyCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {
+                !!$facultyLabels - > toJson() !!
+            },
+            datasets: [{
+                data: {
+                    !!$facultyData - > toJson() !!
+                },
+                backgroundColor: ['#1976d2', '#16a34a', '#9333ea', '#f59e0b', '#ef4444', '#06b6d4', '#ec4899']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 10,
+                        font: {
+                            size: 11
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+@endsection
