@@ -13,8 +13,8 @@ return new class extends Migration {
             $table->string('term', 20);
             $table->string('name');
             $table->json('audience')->nullable(); // e.g., {faculties:[...], cohorts:[...]}
-            $table->timestamp('starts_at');
-            $table->timestamp('ends_at');
+            $table->dateTime('starts_at');
+            $table->dateTime('ends_at');
             $table->timestamps();
         });
     }
