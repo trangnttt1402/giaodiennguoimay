@@ -439,7 +439,7 @@
                         <span class="nav-icon">🔔</span>
                         <span class="nav-text">Tin tức</span>
                     </a>
-                    <a href="#" class="nav-item">
+                    <a href="{{ route('student.guide') }}" class="nav-item {{ request()->routeIs('student.guide') ? 'active' : '' }}">
                         <span class="nav-icon">📘</span>
                         <span class="nav-text">Hướng dẫn sử dụng</span>
                     </a>

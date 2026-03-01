@@ -15,4 +15,9 @@ class StudentNotificationController extends Controller
         $waves = RegistrationWave::orderBy('starts_at', 'desc')->take(10)->get();
         return view('student.notifications.index', compact('announcements', 'waves'));
     }
+
+    public function guide()
+    {
+        return view('student.guide');
+    }
 }
