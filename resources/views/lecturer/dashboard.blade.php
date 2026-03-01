@@ -3,121 +3,239 @@
 @section('title', 'Thời khóa biểu Giảng dạy')
 
 @section('content')
-<div class="row mb-4">
-    <div class="col-md-8">
-        <h3 class="mb-0">
-            <i class="fas fa-calendar-week me-2" style="color: #1976d2;"></i>
-            Thời khóa biểu Giảng dạy
-        </h3>
-        <small class="text-muted">Năm học: {{ $academicYear }} - {{ $term === 'HK1' ? 'Học kỳ 1' : ($term === 'HK2' ? 'Học kỳ 2' : 'Học kỳ Hè') }}</small>
-    </div>
-    <div class="col-md-4 text-end">
-        <div class="badge bg-primary fs-6">
-            <i class="fas fa-chalkboard me-1"></i>
-            {{ $totalClasses }} lớp giảng dạy
-        </div>
-    </div>
+<div style="padding: 24px; color: #64748b; font-size: 14px; font-weight: 500; background: white; border-radius: 8px 8px 0 0; margin: 0 20px 0 20px;">
+    <span style="color: #1e293b;">📅 Thời khóa biểu</span> > <span style="color: #6B4B9D; font-weight: 600;">Lịch giảng dạy</span>
 </div>
 
-@if($totalClasses == 0)
-<div class="card">
-    <div class="card-body text-center py-5">
-        <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
-        <h5 class="text-muted">Chưa có lớp học phần được phân công</h5>
-        <p class="text-muted">Liên hệ với bộ phận đào tạo để biết thêm thông tin</p>
-    </div>
-</div>
-@else
-<div class="card">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-bordered mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th style="width: 100px;">Thứ / Ca</th>
-                        @foreach($days as $day)
-                        <th class="text-center">{{ $day }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
+<div style="margin: 0 20px 20px; padding: 24px; background: white; border-radius: 0 0 8px 8px; display: grid; grid-template-columns: 1fr 320px; gap: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+    <!-- Main Calendar Grid -->
+    <div>
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div>
+                <h3 style="margin: 0 0 4px; color: #1e293b; font-size: 20px; font-weight: 600;">📚 Lịch giảng dạy</h3>
+                <p style="margin: 0; color: #94a3b8; font-size: 13px;">Năm học {{ $academicYear }} - {{ $term === 'HK1' ? 'Học kỳ 1' : ($term === 'HK2' ? 'Học kỳ 2' : 'Học kỳ Hè') }}</p>
+            </div>
+        </div>
+
+        @if($totalClasses == 0)
+            <!-- Empty State -->
+            <div style="text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; border: 2px dashed #cbd5e0;">
+                <div style="font-size: 48px; margin-bottom: 16px;">📭</div>
+                <h4 style="color: #64748b; margin: 0 0 8px; font-size: 16px; font-weight: 600;">Chưa có lớp được phân công</h4>
+                <p style="color: #94a3b8; margin: 0; font-size: 14px;">Liên hệ bộ phận đào tạo để nhận được phân công giảng dạy</p>
+            </div>
+        @else
+            <!-- Calendar Grid -->
+            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; overflow-x: auto;">
+                <div style="display: grid; grid-template-columns: 80px repeat(7, 1fr); gap: 1px; background: #e2e8f0; border-radius: 8px; overflow: hidden;">
+                    <!-- Time column header -->
+                    <div style="grid-column: 1; background: white; padding: 12px 8px; text-align: center; font-size: 12px; font-weight: 600; color: #64748b; border-bottom: 2px solid #cbd5e0;"></div>
+                    
+                    <!-- Day headers -->
                     @php
-                    $maxSlots = 0;
-                    foreach ($schedule as $dayClasses) {
-                    $maxSlots = max($maxSlots, count($dayClasses));
-                    }
+                        $dayNames = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
+                        $today = now();
+                        $weekStart = $today->copy()->startOfWeek(2); // Monday
+                        
+                        // Collect all class sections for quick lookup
+                        $classesByDayHour = [];
+                        foreach ($schedule as $dayIndex => $dayClasses) {
+                            foreach ($dayClasses as $class) {
+                                $key = ($dayIndex + 2) . '_' . intval($class['shift']);
+                                $classesByDayHour[$key][] = $class;
+                            }
+                        }
                     @endphp
+                    
+                    @for($i = 0; $i < 7; $i++)
+                        @php
+                            $date = $weekStart->copy()->addDays($i);
+                            $isToday = $date->isToday();
+                        @endphp
+                        <div style="grid-column: {{ $i + 2 }}; background: white; padding: 12px 8px; text-align: center; border-bottom: 2px solid #cbd5e0; {{ $isToday ? 'background: linear-gradient(135deg, #8595F6 0%, #b99ce9 100%);' : '' }}">
+                            <div style="font-size: 12px; font-weight: 600; color: {{ $isToday ? 'white' : '#2d2d2d' }};">{{ $dayNames[$i] }}</div>
+                            <div style="font-size: 14px; font-weight: 700; color: {{ $isToday ? 'white' : '#1e293b' }}; margin-top: 2px;">{{ $date->format('d') }}</div>
+                        </div>
+                    @endfor
 
-                    @for($slot = 0; $slot < max(1, $maxSlots); $slot++)
-                        <tr>
-                        <td class="text-center align-middle fw-bold bg-light">
-                            Ca {{ $slot + 1 }}
-                        </td>
-                        @foreach($schedule as $dayIndex => $dayClasses)
-                        <td class="p-2" style="vertical-align: top;">
-                            @if(isset($dayClasses[$slot]))
-                            @php $class = $dayClasses[$slot]; @endphp
-                            <div class="class-box p-3" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb); border-left: 4px solid #1976d2; border-radius: 6px; cursor: pointer;"
-                                onclick="window.location='{{ route('lecturer.classes.detail', $class['id']) }}'">
-                                <div class="fw-bold text-primary mb-1" style="font-size: 14px;">
-                                    {{ $class['course_code'] }}
-                                </div>
-                                <div class="mb-2" style="font-size: 13px;">
-                                    {{ $class['course_name'] }}
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-success">{{ $class['section_code'] }}</span>
-                                    <small class="text-muted">
-                                        <i class="fas fa-door-open me-1"></i>{{ $class['room'] }}
-                                    </small>
-                                </div>
-                                <div class="mt-2">
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock me-1"></i>{{ $class['shift'] }}
-                                    </small>
-                                    <span class="badge bg-info ms-2">
-                                        <i class="fas fa-users me-1"></i>{{ $class['enrollment'] }}
-                                    </span>
-                                </div>
+                    <!-- Time slots -->
+                    @php
+                        $startHour = 8;
+                        $endHour = 18;
+                    @endphp
+                    
+                    @for($hour = $startHour; $hour < $endHour; $hour++)
+                        <!-- Time label -->
+                        <div style="grid-column: 1; background: white; padding: 12px 8px; text-align: center; font-size: 12px; font-weight: 600; color: #64748b; border-bottom: 1px solid #e2e8f0;">
+                            {{ str_pad($hour, 2, '0', STR_PAD_LEFT) }}:00
+                        </div>
+                        
+                        <!-- Day cells -->
+                        @for($dayOffset = 0; $dayOffset < 7; $dayOffset++)
+                            <div style="grid-column: {{ $dayOffset + 2 }}; background: white; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; min-height: 60px; position: relative;">
+                                @php
+                                    // Find classes for this day and hour
+                                    $classesInSlot = [];
+                                    foreach ($schedule as $scheduleIndex => $dayClasses) {
+                                        $dayOfWeek = $scheduleIndex + 2; // 2-8 (Mon-Sun)
+                                        if ($dayOfWeek == 8) $dayOfWeek = 1; // Wrap Sunday
+                                        
+                                        if ($dayOfWeek == $dayOffset + 2 || ($dayOfWeek == 1 && $dayOffset + 2 == 8)) {
+                                            foreach ($dayClasses as $class) {
+                                                // Parse shift like "Tiết 1-3" to get start hour
+                                                preg_match('/Tiết (\d+)-(\d+)/', $class['shift'], $matches);
+                                                if (!empty($matches)) {
+                                                    $startPeriod = (int)$matches[1];
+                                                    $endPeriod = (int)$matches[2];
+                                                    // Simple estimate: period 1-2 = 8:00-10:00, etc
+                                                    $hourFromPeriod = 8 + floor(($startPeriod - 1) / 2);
+                                                    if ($hourFromPeriod <= $hour && $hour < $hourFromPeriod + 2) {
+                                                        $classesInSlot[] = $class;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                @endphp
+                                
+                                @forelse($classesInSlot as $idx => $class)
+                                    @php
+                                        $colors = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899'];
+                                        $color = $colors[$idx % count($colors)];
+                                    @endphp
+                                    <a href="{{ route('lecturer.classes.detail', $class['id']) }}" style="position: absolute; inset: 2px; background: {{ $color }}; border-radius: 6px; padding: 6px 8px; color: white; font-size: 11px; font-weight: 500; overflow: hidden; display: flex; flex-direction: column; justify-content: center; z-index: {{ 10 - $idx }}; cursor: pointer; transition: all 0.2s; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,0.1);" title="{{ $class['course_code'] }} ({{ $class['section_code'] }})" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)'; this.style.transform='scale(1.02)';" onmouseout="this.style.boxShadow='0 2px 6px rgba(0,0,0,0.1)'; this.style.transform='scale(1)';">
+                                        <div style="font-weight: 700; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{ $class['course_code'] }}</div>
+                                        <div style="font-size: 10px; opacity: 0.9; white-space: nowrap;">{{ $class['section_code'] }}</div>
+                                        <div style="font-size: 10px; opacity: 0.8; white-space: nowrap;">{{ $class['shift'] }}</div>
+                                        <div style="font-size: 10px; opacity: 0.8; white-space: nowrap;">{{ $class['room'] }}</div>
+                                    </a>
+                                @empty
+                                @endforelse
                             </div>
-                            @endif
-                        </td>
-                        @endforeach
-                        </tr>
                         @endfor
-                </tbody>
-            </table>
+                    @endfor
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 20px; padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #6B4B9D;">
+                <p style="margin: 0 0 12px; color: #1e293b; font-weight: 600; font-size: 13px;">📋 Hướng dẫn:</p>
+                <ul style="margin: 0; padding-left: 20px; color: #64748b; font-size: 12px;">
+                    <li style="margin-bottom: 6px;">Nhấn vào lớp để xem chi tiết danh sách sinh viên</li>
+                    <li style="margin-bottom: 6px;">Các lớp được sắp xếp theo thứ tự thời gian</li>
+                    <li>Mỗi màu đại diện cho một lớp khác nhau</li>
+                </ul>
+            </div>
+        @endif
+    </div>
+
+    <!-- Right Sidebar: Mini Calendar & Stats -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        <!-- Mini Calendar -->
+        <div style="background: linear-gradient(135deg, #6B7BD9 0%, #6B4B9D 100%); border-radius: 12px; padding: 20px; color: white; box-shadow: 0 4px 12px rgba(107, 75, 157, 0.15);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h4 id="calendarTitle" style="margin: 0; font-size: 14px; font-weight: 600;">Tháng {{ now()->format('m')  }}-{{ now()->format('Y') }}</h4>
+                <div style="display: flex; gap: 6px;">
+                    <button style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; width: 28px; height: 28px; cursor: pointer; font-size: 14px; border-radius: 6px; transition: all 0.2s;" onclick="changeMonth(-1)">◀</button>
+                    <button style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; width: 28px; height: 28px; cursor: pointer; font-size: 14px; border-radius: 6px; transition: all 0.2s;" onclick="changeMonth(1)">▶</button>
+                </div>
+            </div>
+
+            <!-- Days of week headers -->
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px;">
+                @foreach(['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'] as $day)
+                    <div style="text-align: center; font-size: 11px; font-weight: 600; opacity: 0.8;">{{ $day }}</div>
+                @endforeach
+            </div>
+
+            <!-- Calendar grid -->
+            <div id="calendarGrid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;">
+                @php
+                    $firstDay = now()->startOfMonth()->dayOfWeek; // 0=Sunday
+                    if ($firstDay == 0) $firstDay = 7; // Convert to 1=Monday, 7=Sunday
+                    $firstDay = $firstDay == 7 ? 0 : $firstDay - 1; // Convert to 0=Monday
+                    $daysInMonth = now()->daysInMonth;
+                @endphp
+
+                <!-- Empty cells before month starts -->
+                @for($i = 0; $i < $firstDay; $i++)
+                    <div style="padding: 8px 0; text-align: center; font-size: 12px;"></div>
+                @endfor
+
+                <!-- Days of month -->
+                @for($day = 1; $day <= $daysInMonth; $day++)
+                    @php
+                        $cellDate = now()->setDay($day);
+                        $isToday = $cellDate->isToday();
+                    @endphp
+                    <div style="padding: 8px 0; text-align: center; font-size: 12px; font-weight: {{ $isToday ? 600 : 400 }}; background: {{ $isToday ? 'rgba(255,255,255,0.2)' : 'transparent' }}; border-radius: {{ $isToday ? 6 : 0 }}px; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='rgba(255,255,255,0.3)';">
+                        <div style="color: white; border-radius: 50%; display: inline-block; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; {{ $isToday ? 'background: rgba(255,255,255,0.3); font-weight: 700;' : '' }}">{{ $day }}</div>
+                    </div>
+                @endfor
+            </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px;">
+            <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">
+                <p style="margin: 0 0 4px; color: #64748b; font-size: 12px; font-weight: 500;">📚 Tổng lớp</p>
+                <p style="margin: 0; color: #1e293b; font-size: 20px; font-weight: 700;">{{ $totalClasses }}</p>
+            </div>
+            <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">
+                <p style="margin: 0 0 4px; color: #64748b; font-size: 12px; font-weight: 500;">📖 Học kỳ</p>
+                <p style="margin: 0; color: #1e293b; font-size: 14px; font-weight: 500;">{{ $term === 'HK1' ? 'Học kỳ 1' : ($term === 'HK2' ? 'Học kỳ 2' : 'Học kỳ Hè') }}</p>
+            </div>
+            <div>
+                <p style="margin: 0 0 4px; color: #64748b; font-size: 12px; font-weight: 500;">📅 Năm học</p>
+                <p style="margin: 0; color: #1e293b; font-size: 14px; font-weight: 500;">{{ $academicYear }}</p>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="alert alert-info mt-3">
-    <i class="fas fa-info-circle me-2"></i>
-    <strong>Hướng dẫn:</strong> Nhấp vào ô lớp học để xem danh sách sinh viên và thông tin chi tiết.
-</div>
-@endif
-@endsection
+<script>
+let currentMonth = {{ now()->format('n') }};
+let currentYear = {{ now()->format('Y') }};
+const today = new Date({{ now()->format('Y') }}, {{ now()->format('n') - 1 }}, {{ now()->format('j') }});
 
-@section('styles')
-<style>
-    .class-box {
-        transition: all 0.3s;
-        min-height: 120px;
+function changeMonth(delta) {
+    currentMonth += delta;
+    if (currentMonth > 12) {
+        currentMonth = 1;
+        currentYear++;
+    } else if (currentMonth < 1) {
+        currentMonth = 12;
+        currentYear--;
     }
+    renderCalendar();
+}
 
-    .class-box:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+function renderCalendar() {
+    const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+    let firstDayIndex = firstDay === 0 ? 6 : firstDay - 1;
+    
+    document.getElementById('calendarTitle').textContent = `Tháng ${String(currentMonth).padStart(2, '0')}-${currentYear}`;
+    
+    let html = '';
+    for (let i = 0; i < firstDayIndex; i++) {
+        html += '<div style="padding: 8px 0; text-align: center; font-size: 12px;"></div>';
     }
-
-    .table td,
-    .table th {
-        border-color: #e0e0e0;
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const isToday = (day === today.getDate() && currentMonth === today.getMonth() + 1 && currentYear === today.getFullYear());
+        const bgColor = isToday ? 'rgba(255,255,255,0.2)' : 'transparent';
+        const borderRadius = isToday ? '6px' : '0';
+        const fontWeight = isToday ? '600' : '400';
+        const innerBg = isToday ? 'background: rgba(255,255,255,0.3); font-weight: 700;' : '';
+        
+        html += `<div style="padding: 8px 0; text-align: center; font-size: 12px; font-weight: ${fontWeight}; background: ${bgColor}; border-radius: ${borderRadius}; cursor: pointer; transition: all 0.2s;" onclick="this.style.background='rgba(255,255,255,0.3)';">`;
+        html += `<div style="color: white; border-radius: 50%; display: inline-block; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; ${innerBg}">${day}</div>`;
+        html += '</div>';
     }
-
-    .table thead th {
-        font-weight: 600;
-        color: #424242;
-    }
-</style>
+    
+    document.getElementById('calendarGrid').innerHTML = html;
+}
+</script>
 @endsection
