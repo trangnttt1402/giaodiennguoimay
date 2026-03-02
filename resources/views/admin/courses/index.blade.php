@@ -341,45 +341,340 @@
 </div>
 
 <!-- Modal Thiết lập Điều kiện Tiên quyết -->
-<div id="prerequisitesModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
-    <div style="background:white; border-radius:12px; width:90%; max-width:600px; max-height:80vh; overflow:auto; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);">
-        <div style="padding:24px; border-bottom:1px solid #e2e8f0;">
-            <h3 style="margin:0; font-size:18px; font-weight:600; color:#1e293b;">
-                🔗 Thiết lập Điều kiện Tiên quyết
+<style>
+    .prereq-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(30, 20, 60, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        animation: prereqFadeIn 0.2s ease;
+    }
+
+    @keyframes prereqFadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes prereqSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.97);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .prereq-modal-card {
+        background: white;
+        border-radius: 16px;
+        width: 92%;
+        max-width: 640px;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 25px 50px -12px rgba(107, 75, 157, 0.25);
+        animation: prereqSlideIn 0.25s ease;
+        overflow: hidden;
+    }
+
+    .prereq-modal-header {
+        padding: 20px 24px;
+        background: linear-gradient(135deg, #6B7BD9 0%, #6B4B9D 100%);
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .prereq-modal-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .prereq-modal-header p {
+        margin: 6px 0 0 0;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    .prereq-modal-header .prereq-course-tag {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 2px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 13px;
+        color: white;
+    }
+
+    .prereq-modal-body {
+        padding: 20px 24px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .prereq-search-box {
+        width: 100%;
+        padding: 10px 14px 10px 38px;
+        border: 1.5px solid #e2e0ed;
+        border-radius: 10px;
+        font-size: 14px;
+        background: #faf9fe url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E") no-repeat 12px center;
+        transition: all 0.2s;
+        margin-bottom: 16px;
+        color: #1e293b;
+    }
+
+    .prereq-search-box:focus {
+        outline: none;
+        border-color: #6B4B9D;
+        box-shadow: 0 0 0 3px rgba(107, 75, 157, 0.1);
+        background-color: white;
+    }
+
+    .prereq-search-box::placeholder {
+        color: #94a3b8;
+    }
+
+    .prereq-counter {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+
+    .prereq-counter-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #6B4B9D;
+        color: white;
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .prereq-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .prereq-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        background: #faf9fe;
+        border: 1.5px solid #ede9f6;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        user-select: none;
+    }
+
+    .prereq-item:hover {
+        border-color: #c4b5d9;
+        background: #f3eeff;
+    }
+
+    .prereq-item.selected {
+        border-color: #6B4B9D;
+        background: #ede5f7;
+        box-shadow: 0 0 0 1px rgba(107, 75, 157, 0.1);
+    }
+
+    .prereq-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #6B4B9D;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .prereq-item-code {
+        font-weight: 700;
+        color: #6B4B9D;
+        font-size: 13px;
+        background: rgba(107, 75, 157, 0.1);
+        padding: 3px 10px;
+        border-radius: 6px;
+        min-width: 60px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .prereq-item-name {
+        font-size: 14px;
+        color: #1e293b;
+        font-weight: 500;
+    }
+
+    .prereq-item-faculty {
+        margin-left: auto;
+        font-size: 11px;
+        color: #94a3b8;
+        flex-shrink: 0;
+    }
+
+    .prereq-item.hidden {
+        display: none;
+    }
+
+    .prereq-empty {
+        text-align: center;
+        padding: 24px;
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .prereq-modal-footer {
+        padding: 16px 24px;
+        border-top: 1.5px solid #ede9f6;
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        align-items: center;
+        background: #faf9fe;
+        flex-shrink: 0;
+    }
+
+    .prereq-btn-cancel {
+        padding: 10px 22px;
+        border: 1.5px solid #e2e0ed;
+        border-radius: 10px;
+        background: white;
+        color: #64748b;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+
+    .prereq-btn-cancel:hover {
+        background: #f8f6fc;
+        border-color: #c4b5d9;
+        color: #6B4B9D;
+    }
+
+    .prereq-btn-save {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #6B7BD9 0%, #6B4B9D 100%);
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.25s;
+        box-shadow: 0 2px 8px rgba(107, 75, 157, 0.25);
+    }
+
+    .prereq-btn-save:hover {
+        background: linear-gradient(135deg, #5a6ac8 0%, #5a3a8c 100%);
+        box-shadow: 0 4px 16px rgba(107, 75, 157, 0.35);
+        transform: translateY(-1px);
+    }
+
+    .prereq-btn-clear {
+        margin-right: auto;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.2s;
+    }
+
+    .prereq-btn-clear:hover {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+</style>
+
+<div id="prerequisitesModal" class="prereq-modal-overlay" onclick="if(event.target===this)closePrerequisitesModal()">
+    <div class="prereq-modal-card" onclick="event.stopPropagation()">
+        <div class="prereq-modal-header">
+            <h3>
+                <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" />
+                </svg>
+                Điều kiện Tiên quyết
             </h3>
-            <p style="margin:8px 0 0 0; color:#64748b; font-size:14px;">
-                Môn học: <strong id="modalCourseName"></strong> (<code id="modalCourseCode"></code>)
-            </p>
+            <p>Môn học: <strong id="modalCourseName"></strong> <span class="prereq-course-tag" id="modalCourseCode"></span></p>
         </div>
 
-        <div style="padding:24px;">
+        <div class="prereq-modal-body">
             <form id="prerequisitesForm" method="POST">
                 @csrf
                 @method('PUT')
 
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-weight:500; color:#475569;">
-                        Chọn các môn học tiên quyết:
-                    </label>
-                    <select multiple id="prerequisiteSelect" name="prerequisites[]" style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; min-height:200px;">
-                        @foreach($allCourses ?? [] as $c)
-                        <option value="{{ $c->id }}">{{ $c->code }} - {{ $c->name }}</option>
-                        @endforeach
-                    </select>
-                    <small style="color:#64748b; font-size:13px; margin-top:4px; display:block;">
-                        💡 Giữ Ctrl (hoặc Cmd) để chọn nhiều môn
-                    </small>
+                <input type="text" class="prereq-search-box" id="prereqSearchInput"
+                    placeholder="Tìm kiếm môn học..." oninput="filterPrereqItems(this.value)">
+
+                <div class="prereq-counter">
+                    <span>Đã chọn</span>
+                    <span class="prereq-counter-num" id="prereqCountNum">0</span>
+                    <span>môn tiên quyết</span>
                 </div>
 
-                <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:24px;">
-                    <button type="button" onclick="closePrerequisitesModal()" style="padding:10px 20px; border:1px solid #cbd5e0; border-radius:6px; background:white; color:#475569; cursor:pointer; font-weight:500;">
-                        Hủy
-                    </button>
-                    <button type="submit" style="padding:10px 20px; border:none; border-radius:6px; background:#1976d2; color:white; cursor:pointer; font-weight:500;">
-                        Lưu thay đổi
-                    </button>
+                <div class="prereq-list" id="prereqList">
+                    @foreach($allCourses ?? [] as $c)
+                    <label class="prereq-item" data-code="{{ strtolower($c->code) }}" data-name="{{ strtolower($c->name) }}" data-id="{{ $c->id }}">
+                        <input type="checkbox" name="prerequisites[]" value="{{ $c->id }}"
+                            onchange="togglePrereqItem(this)">
+                        <span class="prereq-item-code">{{ $c->code }}</span>
+                        <span class="prereq-item-name">{{ $c->name }}</span>
+                        @if($c->faculty)
+                        <span class="prereq-item-faculty">{{ $c->faculty->code ?? '' }}</span>
+                        @endif
+                    </label>
+                    @endforeach
+                </div>
+
+                <div class="prereq-empty" id="prereqEmpty" style="display:none;">
+                    Không tìm thấy môn học phù hợp
                 </div>
             </form>
+        </div>
+
+        <div class="prereq-modal-footer">
+            <button type="button" class="prereq-btn-clear" onclick="clearAllPrereqs()" title="Bỏ chọn tất cả">
+                ✕ Bỏ chọn tất cả
+            </button>
+            <button type="button" class="prereq-btn-cancel" onclick="closePrerequisitesModal()">Hủy</button>
+            <button type="button" class="prereq-btn-save" onclick="submitPrerequisites()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                </svg>
+                Lưu thay đổi
+            </button>
         </div>
     </div>
 </div>
@@ -500,16 +795,35 @@
         document.getElementById('modalCourseCode').textContent = courseCode;
         document.getElementById('modalCourseName').textContent = courseName;
         document.getElementById('prerequisitesForm').action = `/admin/courses/${courseId}/prerequisites`;
+        document.getElementById('prereqSearchInput').value = '';
+
+        // Hide the course's own item and reset all
+        const items = document.querySelectorAll('.prereq-item');
+        items.forEach(item => {
+            item.classList.remove('hidden', 'selected');
+            item.querySelector('input[type="checkbox"]').checked = false;
+            // Hide the course itself
+            if (item.dataset.code === courseCode.toLowerCase()) {
+                item.classList.add('hidden');
+            }
+        });
+        document.getElementById('prereqEmpty').style.display = 'none';
+        updatePrereqCount();
+
         document.getElementById('prerequisitesModal').style.display = 'flex';
 
         // Load current prerequisites via AJAX
         fetch(`/admin/courses/${courseId}/prerequisites`)
             .then(res => res.json())
             .then(data => {
-                const select = document.getElementById('prerequisiteSelect');
-                Array.from(select.options).forEach(option => {
-                    option.selected = data.prerequisites.includes(parseInt(option.value));
+                items.forEach(item => {
+                    const cb = item.querySelector('input[type="checkbox"]');
+                    if (data.prerequisites.includes(parseInt(cb.value))) {
+                        cb.checked = true;
+                        item.classList.add('selected');
+                    }
                 });
+                updatePrereqCount();
             })
             .catch(err => console.error('Error loading prerequisites:', err));
     }
@@ -518,43 +832,66 @@
         document.getElementById('prerequisitesModal').style.display = 'none';
     }
 
-    // Handle form submission via AJAX
-    document.addEventListener('DOMContentLoaded', function() {
+    function togglePrereqItem(cb) {
+        cb.closest('.prereq-item').classList.toggle('selected', cb.checked);
+        updatePrereqCount();
+    }
+
+    function updatePrereqCount() {
+        const count = document.querySelectorAll('.prereq-item:not(.hidden) input[type="checkbox"]:checked').length;
+        document.getElementById('prereqCountNum').textContent = count;
+    }
+
+    function filterPrereqItems(query) {
+        const q = query.toLowerCase().trim();
+        const items = document.querySelectorAll('.prereq-item');
+        let visible = 0;
+        items.forEach(item => {
+            if (item.dataset.code === document.getElementById('modalCourseCode').textContent.toLowerCase()) {
+                return; // keep hidden
+            }
+            const match = !q || item.dataset.code.includes(q) || item.dataset.name.includes(q);
+            item.classList.toggle('hidden', !match);
+            if (match) visible++;
+        });
+        document.getElementById('prereqEmpty').style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    function clearAllPrereqs() {
+        document.querySelectorAll('.prereq-item input[type="checkbox"]').forEach(cb => {
+            cb.checked = false;
+            cb.closest('.prereq-item').classList.remove('selected');
+        });
+        updatePrereqCount();
+    }
+
+    function submitPrerequisites() {
         const form = document.getElementById('prerequisitesForm');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
+        const formData = new FormData(form);
+        const url = form.action;
 
-                const formData = new FormData(this);
-                const url = this.action;
-
-                fetch(url, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json'
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Show success message
-                            alert(data.message);
-                            closePrerequisitesModal();
-                            // Reload page to see updated prerequisites
-                            window.location.reload();
-                        } else {
-                            alert(data.message || 'Có lỗi xảy ra');
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Error updating prerequisites:', err);
-                        alert('Có lỗi xảy ra khi cập nhật điều kiện tiên quyết');
-                    });
+        fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    closePrerequisitesModal();
+                    window.location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                }
+            })
+            .catch(err => {
+                console.error('Error updating prerequisites:', err);
+                alert('Có lỗi xảy ra khi cập nhật điều kiện tiên quyết');
             });
-        }
-    });
+    }
 
     // Close modal when clicking outside
     document.getElementById('prerequisitesModal')?.addEventListener('click', function(e) {
