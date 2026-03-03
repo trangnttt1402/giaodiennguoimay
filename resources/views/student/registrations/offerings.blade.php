@@ -603,6 +603,486 @@
         background: #c82333;
     }
 
+    /* ===== CONFIRM MODAL ===== */
+    .confirm-modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .confirm-modal.active {
+        display: flex;
+    }
+
+    .confirm-modal-content {
+        background: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 520px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        overflow: hidden;
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+        from { transform: translateY(-30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .confirm-modal-header {
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .confirm-modal-header h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+        margin: 0;
+    }
+
+    .confirm-modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #999;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s;
+    }
+
+    .confirm-modal-close:hover {
+        background: #f0f0f0;
+        color: #333;
+    }
+
+    .confirm-modal-body {
+        padding: 24px 20px;
+        text-align: center;
+    }
+
+    .confirm-illustration {
+        font-size: 80px;
+        margin-bottom: 16px;
+    }
+
+    .confirm-text {
+        font-size: 15px;
+        color: #555;
+        margin-bottom: 8px;
+    }
+
+    .confirm-course-name {
+        font-size: 17px;
+        font-weight: 700;
+        color: #6B4B9D;
+        margin-bottom: 24px;
+    }
+
+    .confirm-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .confirm-btn {
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .confirm-btn-back {
+        background: #f0f0f0;
+        color: #555;
+        border: 1px solid #ddd;
+    }
+
+    .confirm-btn-back:hover {
+        background: #e0e0e0;
+    }
+
+    .confirm-btn-ok {
+        background: #6B4B9D;
+        color: white;
+    }
+
+    .confirm-btn-ok:hover {
+        background: #5a3d7e;
+    }
+
+    /* ===== SUCCESS / ERROR MODAL ===== */
+    .result-modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .result-modal.active {
+        display: flex;
+    }
+
+    .result-modal-content {
+        background: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 460px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        overflow: hidden;
+        animation: modalSlideIn 0.3s ease;
+        text-align: center;
+        padding: 32px 24px;
+    }
+
+    .result-icon {
+        font-size: 72px;
+        margin-bottom: 16px;
+    }
+
+    .result-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .result-title.success {
+        color: #28a745;
+    }
+
+    .result-title.error {
+        color: #dc3545;
+    }
+
+    .result-message {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 24px;
+        line-height: 1.5;
+    }
+
+    .result-btn-ok {
+        padding: 12px 40px;
+        background: #6B4B9D;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+
+    .result-btn-ok:hover {
+        background: #5a3d7e;
+    }
+
+    /* ===== CANCEL CONFIRM MODAL ===== */
+    .cancel-modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cancel-modal.active {
+        display: flex;
+    }
+
+    .cancel-modal-content {
+        background: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 520px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        overflow: hidden;
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    .cancel-modal-header {
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .cancel-modal-header h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #dc3545;
+        margin: 0;
+    }
+
+    .cancel-modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #999;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s;
+    }
+
+    .cancel-modal-close:hover {
+        background: #f0f0f0;
+        color: #333;
+    }
+
+    .cancel-modal-body {
+        padding: 24px 20px;
+        text-align: center;
+    }
+
+    .cancel-illustration {
+        font-size: 80px;
+        margin-bottom: 16px;
+    }
+
+    .cancel-text {
+        font-size: 15px;
+        color: #555;
+        margin-bottom: 8px;
+    }
+
+    .cancel-course-name {
+        font-size: 17px;
+        font-weight: 700;
+        color: #dc3545;
+        margin-bottom: 24px;
+    }
+
+    .cancel-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .cancel-btn {
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .cancel-btn-back {
+        background: #f0f0f0;
+        color: #555;
+        border: 1px solid #ddd;
+    }
+
+    .cancel-btn-back:hover {
+        background: #e0e0e0;
+    }
+
+    .cancel-btn-confirm {
+        background: #dc3545;
+        color: white;
+    }
+
+    .cancel-btn-confirm:hover {
+        background: #c82333;
+    }
+
+    /* ===== DETAIL MODAL ===== */
+    .detail-modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .detail-modal.active {
+        display: flex;
+    }
+
+    .detail-modal-content {
+        background: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 560px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        overflow: hidden;
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    .detail-modal-header {
+        background: linear-gradient(135deg, #6B4B9D 0%, #5a3d7e 100%);
+        color: white;
+        padding: 20px;
+    }
+
+    .detail-modal-header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .detail-modal-title {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .detail-modal-subtitle {
+        font-size: 13px;
+        color: rgba(255,255,255,0.85);
+        margin-top: 4px;
+    }
+
+    .detail-modal-close {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        font-size: 20px;
+        color: white;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s;
+        flex-shrink: 0;
+    }
+
+    .detail-modal-close:hover {
+        background: rgba(255,255,255,0.35);
+    }
+
+    .detail-modal-body {
+        padding: 20px;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .detail-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .detail-item-label {
+        font-size: 11px;
+        color: #999;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .detail-item-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .detail-capacity-section {
+        grid-column: 1 / -1;
+        background: #f8f9ff;
+        padding: 12px;
+        border-radius: 6px;
+        margin-top: 4px;
+    }
+
+    .detail-capacity-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    .detail-capacity-bar {
+        background: #e0e0e0;
+        height: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .detail-capacity-fill {
+        height: 100%;
+        border-radius: 5px;
+        transition: width 0.3s;
+    }
+
+    .detail-capacity-fill.low { background: #4caf50; }
+    .detail-capacity-fill.medium { background: #ff9800; }
+    .detail-capacity-fill.high { background: #f44336; }
+
+    .detail-status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .detail-status-badge.available { background: #d4edda; color: #155724; }
+    .detail-status-badge.full { background: #f8d7da; color: #721c24; }
+    .detail-status-badge.registered { background: #cce5ff; color: #004085; }
+
+    @media (max-width: 480px) {
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
     @media (max-width: 1200px) {
         .container-main {
             grid-template-columns: 1fr;
@@ -832,7 +1312,23 @@
                     </div>
 
                     <div class="card-actions">
-                        <button class="card-btn btn-info">Xem chi tiết</button>
+                        <button class="card-btn btn-info" onclick="openDetailModal({
+                            code: '{{ $s->course->code }}',
+                            name: '{{ $s->course->name }}',
+                            sectionCode: '{{ $s->section_code }}',
+                            credits: '{{ $s->course->credits }}',
+                            day: '{{ $s->shift->day_name ?? 'Thứ '.$s->shift->day_of_week }}',
+                            period: 'T{{ $s->shift->start_period ?? "?" }}-{{ $s->shift->end_period ?? "?" }}',
+                            room: '{{ $s->room->code ?? "TBD" }}',
+                            lecturer: '{{ $s->lecturer->name ?? "TBD" }}',
+                            enrolled: {{ $enrolled }},
+                            maxCapacity: {{ $s->max_capacity }},
+                            percentage: {{ number_format($percentage, 0) }},
+                            registered: {{ $registered ? 'true' : 'false' }},
+                            full: {{ $full ? 'true' : 'false' }},
+                            year: '{{ $s->academic_year }}',
+                            term: '{{ $s->term }}'
+                        })">Xem chi tiết</button>
                         @if($registered)
                         <button class="card-btn btn-registered" disabled>Đã đăng ký</button>
                         @elseif($full)
@@ -840,9 +1336,9 @@
                         @elseif(!$openForUser)
                         <button class="card-btn btn-full" disabled>Chưa mở</button>
                         @else
-                        <form action="{{ route('student.register', $s) }}" method="POST" style="flex: 1;">
+                        <form id="register-form-{{ $s->id }}" action="{{ route('student.register', $s) }}" method="POST" style="flex: 1;">
                             @csrf
-                            <button type="submit" class="card-btn btn-register" style="width: 100%;">Đăng ký</button>
+                            <button type="button" class="card-btn btn-register" style="width: 100%;" onclick="openConfirmModal('{{ $s->course->name }}({{ $s->section_code }})', '{{ $s->id }}')">Đăng ký</button>
                         </form>
                         @endif
                     </div>
@@ -880,10 +1376,10 @@
                             <div class="registered-class-code">{{ $cs->course->code }} - {{ $cs->section_code }}</div>
                             <div class="registered-class-name">{{ $cs->course->name }}</div>
                         </div>
-                        <form action="{{ route('student.cancel', $reg) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn hủy lớp này?')" style="display: inline;">
+                        <form id="cancel-form-{{ $reg->id }}" action="{{ route('student.cancel', $reg) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn-cancel-class">Hủy lớp</button>
+                            <button type="button" class="btn-cancel-class" onclick="openCancelModal('{{ $cs->course->code }} - {{ $cs->course->name }}({{ $cs->section_code }})', '{{ $reg->id }}')">Hủy lớp</button>
                         </form>
                     </div>
                     <div class="registered-class-details">
@@ -916,7 +1412,251 @@
     </div>
 </div>
 
+<!-- Modal Xem chi tiết lớp học phần -->
+<div id="detailModal" class="detail-modal">
+    <div class="detail-modal-content">
+        <div class="detail-modal-header">
+            <div class="detail-modal-header-top">
+                <div>
+                    <div class="detail-modal-title" id="detailTitle"></div>
+                    <div class="detail-modal-subtitle" id="detailSubtitle"></div>
+                </div>
+                <button class="detail-modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+        </div>
+        <div class="detail-modal-body">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-item-label">Mã lớp</span>
+                    <span class="detail-item-value" id="detailSectionCode"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-item-label">Số tín chỉ</span>
+                    <span class="detail-item-value" id="detailCredits"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-item-label">Thứ học</span>
+                    <span class="detail-item-value" id="detailDay"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-item-label">Tiết học</span>
+                    <span class="detail-item-value" id="detailPeriod"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-item-label">Phòng học</span>
+                    <span class="detail-item-value" id="detailRoom"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-item-label">Giảng viên</span>
+                    <span class="detail-item-value" id="detailLecturer"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-item-label">Năm học</span>
+                    <span class="detail-item-value" id="detailYear"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-item-label">Trạng thái</span>
+                    <span id="detailStatus"></span>
+                </div>
+                <div class="detail-capacity-section">
+                    <div class="detail-capacity-header">
+                        <span>Đã đăng ký: <strong id="detailEnrolled"></strong></span>
+                        <span id="detailPercentage"></span>
+                    </div>
+                    <div class="detail-capacity-bar">
+                        <div class="detail-capacity-fill" id="detailCapacityFill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xác nhận hủy lớp -->
+<div id="cancelModal" class="cancel-modal">
+    <div class="cancel-modal-content">
+        <div class="cancel-modal-header">
+            <h3>⚠️ Xác nhận hủy lớp</h3>
+            <button class="cancel-modal-close" onclick="closeCancelModal()">&times;</button>
+        </div>
+        <div class="cancel-modal-body">
+            <div class="cancel-illustration">🗑️</div>
+            <div class="cancel-text">Bạn có chắc chắn muốn hủy lớp học phần:</div>
+            <div class="cancel-course-name" id="cancelCourseName"></div>
+            <div class="cancel-actions">
+                <button class="cancel-btn cancel-btn-back" onclick="closeCancelModal()">← Quay lại</button>
+                <button class="cancel-btn cancel-btn-confirm" onclick="submitCancellation()">Xác nhận hủy ✗</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xác nhận đăng ký -->
+<div id="confirmModal" class="confirm-modal">
+    <div class="confirm-modal-content">
+        <div class="confirm-modal-header">
+            <h3>Xác nhận đăng ký</h3>
+            <button class="confirm-modal-close" onclick="closeConfirmModal()">&times;</button>
+        </div>
+        <div class="confirm-modal-body">
+            <div class="confirm-illustration">📚</div>
+            <div class="confirm-text">Bạn có chắc chắn muốn đăng ký lớp học phần:</div>
+            <div class="confirm-course-name" id="confirmCourseName"></div>
+            <div class="confirm-actions">
+                <button class="confirm-btn confirm-btn-back" onclick="closeConfirmModal()">← Quay lại</button>
+                <button class="confirm-btn confirm-btn-ok" id="confirmOkBtn" onclick="submitRegistration()">Đồng ý ✓</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Kết quả đăng ký -->
+<div id="resultModal" class="result-modal">
+    <div class="result-modal-content">
+        <div class="result-icon" id="resultIcon"></div>
+        <div class="result-title" id="resultTitle"></div>
+        <div class="result-message" id="resultMessage"></div>
+        <button class="result-btn-ok" onclick="closeResultModal()">Đã hiểu</button>
+    </div>
+</div>
+
 <script>
+let pendingSectionId = null;
+let pendingCancelId = null;
+
+// === Detail Modal ===
+function openDetailModal(data) {
+    document.getElementById('detailTitle').textContent = data.code + ' - ' + data.name;
+    document.getElementById('detailSubtitle').textContent = 'Lớp ' + data.sectionCode;
+    document.getElementById('detailSectionCode').textContent = data.sectionCode;
+    document.getElementById('detailCredits').textContent = data.credits + ' TC';
+    document.getElementById('detailDay').textContent = data.day;
+    document.getElementById('detailPeriod').textContent = data.period;
+    document.getElementById('detailRoom').textContent = data.room;
+    document.getElementById('detailLecturer').textContent = data.lecturer;
+    document.getElementById('detailYear').textContent = data.year + ' - ' + data.term;
+    document.getElementById('detailEnrolled').textContent = data.enrolled + '/' + data.maxCapacity;
+    document.getElementById('detailPercentage').textContent = data.percentage + '%';
+
+    // Status badge
+    const statusEl = document.getElementById('detailStatus');
+    if (data.registered) {
+        statusEl.innerHTML = '<span class="detail-status-badge registered">Đã đăng ký</span>';
+    } else if (data.full) {
+        statusEl.innerHTML = '<span class="detail-status-badge full">Hết chỗ</span>';
+    } else {
+        statusEl.innerHTML = '<span class="detail-status-badge available">Còn chỗ</span>';
+    }
+
+    // Capacity bar
+    const fill = document.getElementById('detailCapacityFill');
+    fill.style.width = Math.min(data.percentage, 100) + '%';
+    fill.className = 'detail-capacity-fill';
+    if (data.percentage >= 90) fill.classList.add('high');
+    else if (data.percentage >= 60) fill.classList.add('medium');
+    else fill.classList.add('low');
+
+    document.getElementById('detailModal').classList.add('active');
+}
+
+function closeDetailModal() {
+    document.getElementById('detailModal').classList.remove('active');
+}
+
+document.getElementById('detailModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDetailModal();
+});
+
+// === Cancel Modal ===
+function openCancelModal(courseName, regId) {
+    pendingCancelId = regId;
+    document.getElementById('cancelCourseName').textContent = courseName;
+    document.getElementById('cancelModal').classList.add('active');
+}
+
+function closeCancelModal() {
+    document.getElementById('cancelModal').classList.remove('active');
+    pendingCancelId = null;
+}
+
+function submitCancellation() {
+    if (pendingCancelId) {
+        const form = document.getElementById('cancel-form-' + pendingCancelId);
+        if (form) {
+            closeCancelModal();
+            form.submit();
+        }
+    }
+}
+
+// Close cancel modal when clicking outside
+document.getElementById('cancelModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCancelModal();
+});
+
+// === Confirm Modal ===
+function openConfirmModal(courseName, sectionId) {
+    pendingSectionId = sectionId;
+    document.getElementById('confirmCourseName').textContent = courseName;
+    document.getElementById('confirmModal').classList.add('active');
+}
+
+function closeConfirmModal() {
+    document.getElementById('confirmModal').classList.remove('active');
+    pendingSectionId = null;
+}
+
+function submitRegistration() {
+    if (pendingSectionId) {
+        const form = document.getElementById('register-form-' + pendingSectionId);
+        if (form) {
+            closeConfirmModal();
+            form.submit();
+        }
+    }
+}
+
+// Close confirm modal when clicking outside
+document.getElementById('confirmModal').addEventListener('click', function(e) {
+    if (e.target === this) closeConfirmModal();
+});
+
+// === Result Modal (success / error) ===
+function showResultModal(type, message, customTitle) {
+    document.getElementById('resultIcon').textContent = type === 'success' ? '✅' : '❌';
+    const titleEl = document.getElementById('resultTitle');
+    if (customTitle) {
+        titleEl.textContent = customTitle;
+    } else {
+        titleEl.textContent = type === 'success' ? 'Đăng ký thành công!' : 'Đăng ký thất bại!';
+    }
+    titleEl.className = 'result-title ' + type;
+    document.getElementById('resultMessage').textContent = message;
+    document.getElementById('resultModal').classList.add('active');
+}
+
+function closeResultModal() {
+    document.getElementById('resultModal').classList.remove('active');
+}
+
+// Close result modal when clicking outside
+document.getElementById('resultModal').addEventListener('click', function(e) {
+    if (e.target === this) closeResultModal();
+});
+
+// Auto-show result modal from flash session
+@if(session('success'))
+    @if(str_contains(session('success'), 'Hủy'))
+        showResultModal('success', @json(session('success')), 'Hủy đăng ký thành công!');
+    @else
+        showResultModal('success', @json(session('success')));
+    @endif
+@endif
+@if(session('error'))
+    showResultModal('error', @json(session('error')));
+@endif
+
+// === Registered Modal ===
 function openRegisteredModal() {
     document.getElementById('registeredModal').classList.add('active');
 }
@@ -925,7 +1665,7 @@ function closeRegisteredModal() {
     document.getElementById('registeredModal').classList.remove('active');
 }
 
-// Close modal when clicking outside
+// Close registered modal when clicking outside
 document.getElementById('registeredModal').addEventListener('click', function(e) {
     if (e.target === this) {
         closeRegisteredModal();
