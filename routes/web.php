@@ -148,7 +148,7 @@ Route::prefix('admin')->group(function () {
         Route::resource('class-sections', \App\Http\Controllers\ClassSectionController::class)->except(['show']);
 
         // S-1: Registration Waves
-        Route::resource('registration-waves', \App\Http\Controllers\RegistrationWaveController::class)->except(['show']);
+        Route::resource('registration-waves', \App\Http\Controllers\RegistrationWaveController::class);
 
         // S-2: Reports
         Route::get('/reports', [AdminController::class, 'reports'])->name('admin.reports');

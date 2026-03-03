@@ -73,6 +73,19 @@ class RegistrationWaveController extends Controller
         return redirect()->route('registration-waves.index')->with('success', 'Tạo đợt đăng ký thành công.');
     }
 
+    // S-1: Hiển thị chi tiết đợt đăng ký
+    public function show(RegistrationWave $registration_wafe)
+    {
+        $faculties = Faculty::orderBy('name')->get();
+        $audience = json_decode($registration_wafe->audience, true) ?? [];
+
+        return view('admin.registration-waves.show', [
+            'wave' => $registration_wafe,
+            'faculties' => $faculties,
+            'audience' => $audience,
+        ]);
+    }
+
     // S-1: Hiển thị form chỉnh sửa đợt đăng ký
     public function edit(RegistrationWave $registration_wafe)
     {
