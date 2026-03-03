@@ -88,8 +88,8 @@ class ClassSectionController extends Controller
 
         $courses = Course::with('faculty')->orderBy('code')->get();
         $lecturers = User::where('role', 'lecturer')->orderBy('name')->get();
-        $rooms = Room::orderBy('code')->get();
-        $shifts = StudyShift::orderBy('day_of_week')->orderBy('start_period')->get();
+        $rooms = Room::where('status', 'active')->orderBy('code')->get();
+        $shifts = StudyShift::where('status', 'active')->orderBy('day_of_week')->orderBy('start_period')->get();
 
         return view('admin.class-sections.create', [
             'academicYear' => $academicYear,

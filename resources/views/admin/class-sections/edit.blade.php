@@ -1,7 +1,5 @@
 @extends('admin.layout')
 
-@section('title', 'Sửa Lớp học phần')
-
 @section('content')
 <div class="form-container">
     <div class="form-card">

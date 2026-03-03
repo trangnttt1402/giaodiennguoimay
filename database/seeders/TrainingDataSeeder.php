@@ -15,18 +15,16 @@ class TrainingDataSeeder extends Seeder
 {
     public function run()
     {
-        DB::statement('PRAGMA foreign_keys = OFF');
-
         // Seed Rooms
         $rooms = [
-            ['code' => 'A101', 'building' => 'Nhà A', 'capacity' => 50],
-            ['code' => 'A102', 'building' => 'Nhà A', 'capacity' => 60],
-            ['code' => 'A103', 'building' => 'Nhà A', 'capacity' => 40],
-            ['code' => 'B201', 'building' => 'Nhà B', 'capacity' => 80],
-            ['code' => 'B202', 'building' => 'Nhà B', 'capacity' => 70],
-            ['code' => 'C301', 'building' => 'Nhà C', 'capacity' => 100],
-            ['code' => 'LAB01', 'building' => 'Phòng Máy', 'capacity' => 30],
-            ['code' => 'LAB02', 'building' => 'Phòng Máy', 'capacity' => 35],
+            ['code' => 'A101', 'building' => 'Nhà A', 'capacity' => 50, 'status' => 'active'],
+            ['code' => 'A102', 'building' => 'Nhà A', 'capacity' => 60, 'status' => 'active'],
+            ['code' => 'A103', 'building' => 'Nhà A', 'capacity' => 40, 'status' => 'active'],
+            ['code' => 'B201', 'building' => 'Nhà B', 'capacity' => 80, 'status' => 'active'],
+            ['code' => 'B202', 'building' => 'Nhà B', 'capacity' => 70, 'status' => 'active'],
+            ['code' => 'C301', 'building' => 'Nhà C', 'capacity' => 100, 'status' => 'active'],
+            ['code' => 'LAB01', 'building' => 'Phòng Máy', 'capacity' => 30, 'status' => 'active'],
+            ['code' => 'LAB02', 'building' => 'Phòng Máy', 'capacity' => 35, 'status' => 'active'],
         ];
 
         foreach ($rooms as $room) {
@@ -36,25 +34,25 @@ class TrainingDataSeeder extends Seeder
         // Seed Study Shifts
         $shifts = [
             // Thứ 2
-            ['day_of_week' => 2, 'start_period' => 1, 'end_period' => 3],   // Sáng: tiết 1-3
-            ['day_of_week' => 2, 'start_period' => 4, 'end_period' => 6],   // Chiều: tiết 4-6
-            ['day_of_week' => 2, 'start_period' => 7, 'end_period' => 9],   // Tối: tiết 7-9
+            ['day_of_week' => 2, 'start_period' => 1, 'end_period' => 3, 'status' => 'active'],   // Sáng: tiết 1-3
+            ['day_of_week' => 2, 'start_period' => 4, 'end_period' => 6, 'status' => 'active'],   // Chiều: tiết 4-6
+            ['day_of_week' => 2, 'start_period' => 7, 'end_period' => 9, 'status' => 'active'],   // Tối: tiết 7-9
             // Thứ 3
-            ['day_of_week' => 3, 'start_period' => 1, 'end_period' => 3],
-            ['day_of_week' => 3, 'start_period' => 4, 'end_period' => 6],
-            ['day_of_week' => 3, 'start_period' => 7, 'end_period' => 9],
+            ['day_of_week' => 3, 'start_period' => 1, 'end_period' => 3, 'status' => 'active'],
+            ['day_of_week' => 3, 'start_period' => 4, 'end_period' => 6, 'status' => 'active'],
+            ['day_of_week' => 3, 'start_period' => 7, 'end_period' => 9, 'status' => 'active'],
             // Thứ 4
-            ['day_of_week' => 4, 'start_period' => 1, 'end_period' => 3],
-            ['day_of_week' => 4, 'start_period' => 4, 'end_period' => 6],
-            ['day_of_week' => 4, 'start_period' => 7, 'end_period' => 9],
+            ['day_of_week' => 4, 'start_period' => 1, 'end_period' => 3, 'status' => 'active'],
+            ['day_of_week' => 4, 'start_period' => 4, 'end_period' => 6, 'status' => 'active'],
+            ['day_of_week' => 4, 'start_period' => 7, 'end_period' => 9, 'status' => 'active'],
             // Thứ 5
-            ['day_of_week' => 5, 'start_period' => 1, 'end_period' => 3],
-            ['day_of_week' => 5, 'start_period' => 4, 'end_period' => 6],
-            ['day_of_week' => 5, 'start_period' => 7, 'end_period' => 9],
+            ['day_of_week' => 5, 'start_period' => 1, 'end_period' => 3, 'status' => 'active'],
+            ['day_of_week' => 5, 'start_period' => 4, 'end_period' => 6, 'status' => 'active'],
+            ['day_of_week' => 5, 'start_period' => 7, 'end_period' => 9, 'status' => 'active'],
             // Thứ 6
-            ['day_of_week' => 6, 'start_period' => 1, 'end_period' => 3],
-            ['day_of_week' => 6, 'start_period' => 4, 'end_period' => 6],
-            ['day_of_week' => 6, 'start_period' => 7, 'end_period' => 9],
+            ['day_of_week' => 6, 'start_period' => 1, 'end_period' => 3, 'status' => 'active'],
+            ['day_of_week' => 6, 'start_period' => 4, 'end_period' => 6, 'status' => 'active'],
+            ['day_of_week' => 6, 'start_period' => 7, 'end_period' => 9, 'status' => 'active'],
         ];
 
         foreach ($shifts as $shift) {
@@ -192,8 +190,6 @@ class TrainingDataSeeder extends Seeder
                 'ends_at' => now()->addDays(14),
             ]);
         }
-
-        DB::statement('PRAGMA foreign_keys = ON');
 
         $this->command->info('✅ Đã seed dữ liệu đào tạo thành công!');
     }

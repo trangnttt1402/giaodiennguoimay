@@ -1,7 +1,5 @@
 @extends('admin.layout')
 
-@section('title', 'Thêm Lớp học phần')
-
 @section('content')
 <div class="form-container">
     <div class="form-card">
@@ -87,7 +85,7 @@
                         <option value="">-- Chọn ca học --</option>
                         @foreach($shifts as $shift)
                         <option value="{{ $shift->id }}" {{ old('shift_id') == $shift->id ? 'selected' : '' }}>
-                            Tiết {{ $shift->start_period }}-{{ $shift->end_period }}
+                            {{ strtoupper(['', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7', 'CN'][($shift->day_of_week ?? 1)]) }} - Tiết {{ $shift->start_period }}-{{ $shift->end_period }} ({{ $shift->start_time ? $shift->start_time.' - '.$shift->end_time : 'TBD' }})
                         </option>
                         @endforeach
                     </select>
@@ -100,7 +98,7 @@
                         <option value="">-- Chọn phòng --</option>
                         @foreach($rooms as $room)
                         <option value="{{ $room->id }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>
-                            {{ $room->code }} - {{ $room->building }} ({{ $room->capacity }} chỗ)
+                            {{ $room->code }} ({{ $room->building }}{{ $room->floor ? ', Tầng '.$room->floor : '' }}) - {{ $room->capacity }} chỗ
                         </option>
                         @endforeach
                     </select>

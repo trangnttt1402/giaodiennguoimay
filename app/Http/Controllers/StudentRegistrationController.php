@@ -19,28 +19,8 @@ class StudentRegistrationController extends Controller
     public function offerings(Request $request)
     {
         $user = Auth::user();
-        $year = $request->input('academic_year', session('academic_year', '2024-2025'));
+        $year = $request->input('academic_year', session('academic_year', '2025-2026'));
         $term = $request->input('term', session('term', 'HK1'));
-        $query = ClassSection::with(['course', 'lecturer', 'room', 'shift'])
-            ->where('academic_year', $year)->where('term', $term);
-
-        if ($search = $request->input('search')) {
-            $query->whereHas('course', function ($q) use ($search) {
-                $q->where('code', 'like', "%$search%")
-                    ->orWhere('name', 'like', "%$search%");
-            })->orWhere('section_code', 'like', "%$search%");
-        }
-
-        if ($facultyId = $request->input('faculty_id')) {
-            $query->whereHas('course', function ($q) use ($facultyId) {
-                $q->where('faculty_id', $facultyId);
-            });
-        }
-
-        $sections = $query->paginate(20)->withQueryString();
-
-        $currentRegs = $this->currentRegistrations($year, $term)->load('classSection.course', 'classSection.shift', 'classSection.room');
-        $registeredSectionIds = $currentRegs->pluck('class_section_id')->toArray();
 
         // Current open wave info
         $wave = RegistrationWave::where('academic_year', $year)->where('term', $term)
@@ -48,7 +28,55 @@ class StudentRegistrationController extends Controller
             ->orderBy('starts_at', 'desc')->first();
         $openForUser = $this->isRegistrationOpenFor($user, $year, $term);
 
-        return view('student.registrations.offerings', compact('sections', 'year', 'term', 'registeredSectionIds', 'currentRegs', 'wave', 'openForUser'));
+        // Chỉ hiển thị lớp học phần khi đang trong thời gian đăng ký
+        if ($openForUser && $wave) {
+            $query = ClassSection::with(['course', 'lecturer', 'room', 'shift'])
+                ->where('academic_year', $year)->where('term', $term);
+
+            if ($search = $request->input('search')) {
+                $query->whereHas('course', function ($q) use ($search) {
+                    $q->where('code', 'like', "%$search%")
+                        ->orWhere('name', 'like', "%$search%");
+                })->orWhere('section_code', 'like', "%$search%");
+            }
+
+            if ($facultyId = $request->input('faculty_id')) {
+                $query->whereHas('course', function ($q) use ($facultyId) {
+                    $q->where('faculty_id', $facultyId);
+                });
+            }
+
+            // Filter by lecturer
+            if ($lecturer = $request->input('lecturer')) {
+                $query->whereHas('lecturer', function ($q) use ($lecturer) {
+                    $q->where('name', 'like', "%$lecturer%")
+                      ->orWhere('code', 'like', "%$lecturer%");
+                });
+            }
+
+            // Filter by day of week
+            if ($day = $request->input('day')) {
+                $query->whereHas('shift', function ($q) use ($day) {
+                    $q->where('day_of_week', $day);
+                });
+            }
+
+            $sections = $query->paginate(20)->withQueryString();
+
+            // Get available courses for this term
+            $courses = Course::whereHas('classSections', function($q) use ($year, $term) {
+                $q->where('academic_year', $year)->where('term', $term);
+            })->orderBy('code')->get();
+        } else {
+            // Không trong thời gian đăng ký - không hiển thị lớp
+            $sections = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
+            $courses = collect([]);
+        }
+
+        $currentRegs = $this->currentRegistrations($year, $term)->load('classSection.course', 'classSection.shift', 'classSection.room');
+        $registeredSectionIds = $currentRegs->pluck('class_section_id')->toArray();
+
+        return view('student.registrations.offerings', compact('sections', 'year', 'term', 'registeredSectionIds', 'currentRegs', 'wave', 'openForUser', 'courses'));
     }
 
     public function my()
