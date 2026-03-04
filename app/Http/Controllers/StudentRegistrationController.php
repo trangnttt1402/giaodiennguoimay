@@ -234,10 +234,19 @@ class StudentRegistrationController extends Controller
 
     public function timetable()
     {
-        $year = session('academic_year', '2024-2025');
+        $year = session('academic_year', '2025-2026');
         $term = session('term', 'HK1');
-        $regs = $this->currentRegistrations($year, $term)->load('classSection.course', 'classSection.room', 'classSection.shift');
-        return view('student.timetable.index', compact('regs', 'year', 'term'));
+        $regs = $this->currentRegistrations($year, $term)->load('classSection.course', 'classSection.room', 'classSection.shift', 'classSection.lecturer');
+
+        // Get current wave info
+        $wave = RegistrationWave::where('academic_year', $year)->where('term', $term)
+            ->where('starts_at', '<=', now())->where('ends_at', '>=', now())
+            ->orderBy('starts_at', 'desc')->first();
+
+        // Count total credits
+        $totalCredits = $regs->sum(fn($r) => $r->classSection->course->credits ?? 0);
+
+        return view('student.timetable.index', compact('regs', 'year', 'term', 'wave', 'totalCredits'));
     }
 
     public function exportIcs()

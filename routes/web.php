@@ -67,6 +67,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->group(function (
 
     // Notifications
     Route::get('/notifications', [StudentNotificationController::class, 'index'])->name('student.notifications');
+    Route::get('/notifications/{announcement}', [StudentNotificationController::class, 'show'])->name('student.notifications.show');
 
     // Guide
     Route::get('/guide', [StudentNotificationController::class, 'guide'])->name('student.guide');

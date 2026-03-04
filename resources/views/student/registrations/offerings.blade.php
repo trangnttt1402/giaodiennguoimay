@@ -1288,7 +1288,7 @@
 
                     <div class="card-row">
                         <span class="card-label">Thứ</span>
-                        <span class="card-value">{{ $s->shift->day_name ?? 'Thứ '.$s->shift->day_of_week }}</span>
+                        <span class="card-value">{{ $s->day_name }}</span>
                     </div>
 
                     <div class="card-row">
@@ -1317,7 +1317,7 @@
                             name: '{{ $s->course->name }}',
                             sectionCode: '{{ $s->section_code }}',
                             credits: '{{ $s->course->credits }}',
-                            day: '{{ $s->shift->day_name ?? 'Thứ '.$s->shift->day_of_week }}',
+                            day: '{{ $s->day_name }}',
                             period: 'T{{ $s->shift->start_period ?? "?" }}-{{ $s->shift->end_period ?? "?" }}',
                             room: '{{ $s->room->code ?? "TBD" }}',
                             lecturer: '{{ $s->lecturer->name ?? "TBD" }}',
@@ -1389,7 +1389,7 @@
                         </div>
                         <div class="registered-class-detail">
                             <span class="detail-label-small">Thứ/Tiết:</span>
-                            <span>{{ $cs->shift->day_name ?? 'Thứ '.$cs->shift->day_of_week ?? 'TBD' }} / T{{ $cs->shift->start_period ?? '?' }}-{{ $cs->shift->end_period ?? '?' }}</span>
+                            <span>{{ $cs->day_name }} / T{{ $cs->shift->start_period ?? '?' }}-{{ $cs->shift->end_period ?? '?' }}</span>
                         </div>
                         <div class="registered-class-detail">
                             <span class="detail-label-small">Phòng:</span>
