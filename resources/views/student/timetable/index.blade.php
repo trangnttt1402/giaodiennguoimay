@@ -125,13 +125,32 @@
                                     $spanPeriods = $shift->end_period - $shift->start_period + 1;
                                 @endphp
                                 @if($isFirstPeriod)
-                                <div style="position: absolute; top: 2px; left: 2px; right: 2px; height: calc({{ $spanPeriods }} * 100% - 4px); background: {{ $color }}; border-radius: 6px; padding: 6px 8px; color: white; font-size: 11px; font-weight: 500; overflow: hidden; display: flex; flex-direction: column; justify-content: center; z-index: 5; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15);" title="{{ $course->code }} - {{ $course->name }} ({{ $cs->section_code }})&#10;GV: {{ $cs->lecturer->name ?? 'TBD' }}&#10;Phòng: {{ $cs->room->code ?? 'TBD' }}&#10;Tiết {{ $shift->start_period }}-{{ $shift->end_period }}">
-                                    <div style="font-weight: 700; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; font-size: 12px;">{{ $course->code }}</div>
-                                    <div style="font-size: 10px; opacity: 0.95; white-space: nowrap; margin-top: 1px;">{{ $cs->section_code }}</div>
-                                    <div style="font-size: 10px; opacity: 0.9; white-space: nowrap;">{{ $cs->room ? $cs->room->code : 'TBA' }}</div>
-                                    @if($spanPeriods >= 3)
-                                    <div style="font-size: 9px; opacity: 0.8; white-space: nowrap; margin-top: 2px;">T{{ $shift->start_period }}-{{ $shift->end_period }}</div>
-                                    @endif
+                                @php
+                                    $startMin = 7*60 + ($shift->start_period - 1)*50;
+                                    $endMin   = 7*60 + ($shift->end_period)*50;
+                                    $timeStr  = sprintf('%02d:%02d - %02d:%02d', floor($startMin/60), $startMin%60, floor($endMin/60), $endMin%60);
+                                @endphp
+                                <div class="tkb-card"
+                                     data-course-code="{{ $course->code }}"
+                                     data-course-name="{{ $course->name }}"
+                                     data-section-code="{{ $cs->section_code }}"
+                                     data-lecturer="{{ $cs->lecturer->name ?? '' }}"
+                                     data-room="{{ $cs->room->code ?? '' }}"
+                                     data-time="{{ $timeStr }} (Tiết {{ $shift->start_period }}-{{ $shift->end_period }})"
+                                     data-credits="{{ $course->credits }}"
+                                     style="position: absolute; top: 2px; left: 2px; right: 2px; height: calc({{ $spanPeriods }} * 100% - 4px); background: #fff; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; z-index: 5; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.13); border: 1px solid {{ $color }}33;">
+                                    {{-- Header bar (colored) --}}
+                                    <div style="background: {{ $color }}; color: #fff; padding: 5px 8px;">
+                                        <div style="font-weight: 700; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $course->name }}</div>
+                                        <div style="font-size: 10px; opacity: .92; margin-top: 1px;">{{ $timeStr }} (Tiết {{ $shift->start_period }}-{{ $shift->end_period }})</div>
+                                    </div>
+                                    {{-- Body --}}
+                                    <div style="padding: 5px 8px; flex: 1; display: flex; flex-direction: column; gap: 2px; color: #334155; font-size: 10px; line-height: 1.35;">
+                                        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $cs->section_code }}</div>
+                                        <div style="margin-top: auto;"></div>
+                                        <div style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $cs->room->code ?? 'TBA' }}</div>
+                                        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #64748b;">{{ $cs->lecturer->name ?? '' }}</div>
+                                    </div>
                                 </div>
                                 @endif
                             @endforeach
@@ -145,7 +164,7 @@
         <div style="margin-top: 20px; padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #6B4B9D;">
             <p style="margin: 0 0 12px; color: #1e293b; font-weight: 600; font-size: 13px;">📋 Hướng dẫn:</p>
             <ul style="margin: 0; padding-left: 20px; color: #64748b; font-size: 12px;">
-                <li style="margin-bottom: 6px;">Di chuột vào lớp để xem chi tiết (mã lớp, phòng, giảng viên)</li>
+                <li style="margin-bottom: 6px;">Click vào lớp để xem chi tiết môn học (mã lớp, phòng, giảng viên, tín chỉ)</li>
                 <li style="margin-bottom: 6px;">Các lớp được hiển thị theo tiết học và thứ trong tuần</li>
                 <li>Tải xuống ICS để thêm vào calendar của bạn</li>
             </ul>
@@ -417,5 +436,76 @@ function renderCalendar() {
 
 // Initialize on page load
 updateWeekDisplay();
+
+// Modal HTML insertion
+const modalHtml = `
+<div id="courseModal" style="display:none;position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,.45);align-items:center;justify-content:center;z-index:9999;">
+    <div style="background:#fff;border-radius:10px;padding:18px;width:520px;max-width:94%;box-shadow:0 10px 30px rgba(0,0,0,.2);">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <div id="modalTitle" style="font-weight:800;font-size:16px;color:#222"></div>
+                <div id="modalSubtitle" style="font-size:13px;color:#666;margin-top:6px"></div>
+            </div>
+            <button onclick="closeCourseModal()" style="border:none;background:transparent;font-size:20px;cursor:pointer">×</button>
+        </div>
+        <hr style="margin:12px 0;border:none;border-top:1px solid #f1eef9"/>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div><strong>Mã môn</strong><div id="modalCode" class="muted"></div></div>
+            <div><strong>Tín chỉ</strong><div id="modalCredits" class="muted"></div></div>
+            <div style="grid-column:1/-1"><strong>Lớp</strong><div id="modalSection" class="muted"></div></div>
+            <div><strong>Giảng viên</strong><div id="modalLecturer" class="muted"></div></div>
+            <div><strong>Phòng</strong><div id="modalRoom" class="muted"></div></div>
+            <div style="grid-column:1/-1"><strong>Thời gian</strong><div id="modalTime" class="muted"></div></div>
+        </div>
+        <div style="text-align:right;margin-top:14px">
+            <button class="btn" onclick="closeCourseModal()">Đóng</button>
+        </div>
+    </div>
+</div>`;
+
+document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+function openCourseModal(data) {
+    document.getElementById('modalTitle').textContent = (data.course_code || '') + ' - ' + (data.course_name || '');
+    document.getElementById('modalSubtitle').textContent = data.section_code || '';
+    document.getElementById('modalCode').textContent = data.course_code || '';
+    document.getElementById('modalCredits').textContent = data.credits || '';
+    document.getElementById('modalSection').textContent = data.section_code || '';
+    document.getElementById('modalLecturer').textContent = data.lecturer || '-';
+    document.getElementById('modalRoom').textContent = data.room || '-';
+    document.getElementById('modalTime').textContent = data.time || '-';
+    document.getElementById('courseModal').style.display = 'flex';
+}
+
+function closeCourseModal() {
+    const m = document.getElementById('courseModal');
+    if (m) m.style.display = 'none';
+}
+
+// Attach click handlers to class cards
+function attachClassCardListeners() {
+    document.querySelectorAll('.tkb-card').forEach(el => {
+        // avoid duplicate listeners
+        if (el.dataset._listenerAttached) return;
+        el.dataset._listenerAttached = '1';
+        el.addEventListener('click', () => {
+            const data = {
+                course_code: el.getAttribute('data-course-code'),
+                course_name: el.getAttribute('data-course-name'),
+                section_code: el.getAttribute('data-section-code'),
+                lecturer: el.getAttribute('data-lecturer'),
+                room: el.getAttribute('data-room'),
+                time: el.getAttribute('data-time'),
+                credits: el.getAttribute('data-credits')
+            };
+            openCourseModal(data);
+        });
+    });
+}
+
+// Run after DOM ready (also safe to call multiple times)
+document.addEventListener('DOMContentLoaded', function() {
+    attachClassCardListeners();
+});
 </script>
 @endsection
