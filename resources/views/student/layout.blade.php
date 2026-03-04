@@ -13,8 +13,13 @@
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
             margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
             font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
             background: linear-gradient(180deg, #6B7BD9 0%, #6B4B9D 59%, #6B4B9D 100%);
             color: #2d2d2d;
@@ -22,17 +27,19 @@
 
         .student-shell {
             width: 100%;
-            min-height: 100vh;
+            height: 100vh;
             padding: 6px;
+            overflow: hidden;
         }
 
         .student-shell-inner {
             display: grid;
             grid-template-columns: 230px 1fr;
-            min-height: calc(100vh - 12px);
+            height: calc(100vh - 12px);
             gap: 8px;
             max-width: none;
             margin: 0;
+            overflow: hidden;
         }
 
         .sidebar {
@@ -43,6 +50,8 @@
             flex-direction: column;
             color: #fff;
             box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08);
+            height: 100%;
+            overflow-y: auto;
         }
 
         .sidebar-brand {
@@ -166,6 +175,10 @@
             background: #f6f3ff;
             border-radius: 8px;
             padding: 18px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
         }
 
         .topbar {
@@ -174,6 +187,7 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 16px;
+            flex-shrink: 0;
         }
 
         .profile-quick-link {
@@ -218,7 +232,9 @@
         .content {
             background: #f6f3ff;
             border-radius: 6px;
-            min-height: calc(100vh - 180px);
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
         }
 
         .grid {
